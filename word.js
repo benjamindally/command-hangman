@@ -6,6 +6,7 @@ function Word(newWord) {
   this.wordArray = this.word.split("");
   this.resultArray = [];
   this.guessArray = [];
+  this.count = 0;
 
   this.holdThisWord = function() {
     for (var x = 0; x < this.wordArray.length; x++) {
@@ -32,20 +33,14 @@ function Word(newWord) {
       ) {
         letter = new Letter(userInput, true);
         this.resultArray[i] = letter.printLetter();
+        return;
       } else {
         letter = new Letter(userInput, false);
         this.resultArray[i] = letter.printLetter();
       }
     }
-
+    this.count++;
     return;
-  };
-  this.wordCheck = function() {
-    if (this.resultArray.toString() === this.wordArray.toString()) {
-      console.log(
-        "You win! Collect your prize at the bottom of your next cereal box!"
-      );
-    }
   };
 }
 

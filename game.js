@@ -8,12 +8,11 @@ var wordBank = [
   "gi-joe",
   "transformers",
 ];
-var count = 0;
+var userInput = "";
 
 var selectedWord = "";
 var guess = "";
 gameStart();
-//wordSelector();
 
 function gameStart() {
   inquirer
@@ -28,7 +27,11 @@ function gameStart() {
     ])
     .then(function(response) {
       if (response.beginNew) {
+        console.log(
+          "\nRighteous! Let's get started. You have 7 chances. Don't worry; only incorrect guesses count against you.\n"
+        );
         wordSelector();
+        console.log(guess.resultArray.join(" ") + "\n");
       } else {
         console.log("No problem. Maybe next time.");
         return;
@@ -40,28 +43,39 @@ function gameStart() {
 function wordSelector() {
   var randomNumber = Math.floor(Math.random() * 5);
   selectedWord = wordBank[randomNumber];
-  console.log(selectedWord);
   guess = new Word(selectedWord);
   guess.holdThisWord();
 }
 
 function guessALetter() {
-  if (count < 12) {
+  if (guess.count < 7) {
     inquirer
       .prompt([
         {
           name: "userInput",
-          message: "Come on, gimme a letter",
+          message:
+            "Come on, gimme a letter. You have " +
+            (7 - guess.count) +
+            " guesses remaining.",
         },
       ])
       .then(function(answer) {
-        guess.checkLetter(answer.userInput);
-        console.log(guess.resultArray);
-        console.log(guess.wordArray);
-        console.log(guess.resultArray.join(" "));
-        count++;
-        guess.wordCheck();
-        guessALetter();
+        userInput = answer.userInput;
+        runGame();
       });
+  } else {
+    console.log("Better luck next time, kiddo.\n");
   }
+}
+
+function runGame() {
+  guess.checkLetter(userInput.toLowerCase());
+  console.log("\n" + guess.resultArray.join(" ") + "\n");
+  if (guess.resultArray.toString() === guess.wordArray.toString()) {
+    console.log(
+      "You win! Collect your prize at the bottom of your next cereal box!\n"
+    );
+    return;
+  }
+  guessALetter();
 }
